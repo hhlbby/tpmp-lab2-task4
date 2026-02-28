@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "buildings.h"
+
 void create_initial_file(const char *filename) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         perror("Ошибка при создании файла");
         return;
     }
+
     fprintf(file, "ул. Ленина, 1|Жилой|5|60|30\n");
     fprintf(file, "пр. Мира, 15|Офисный|12|240|55\n");
     fprintf(file, "ул. Гагарина, 8|Жилой|9|108|70\n");
@@ -31,7 +33,6 @@ void view_file(const char *filename) {
     printf("\n--- Содержимое файла '%s' ---\n", filename);
     char line[256];
     while (fgets(line, sizeof(line), file)) {
-        // Убираем символ новой строки в конце для красивого вывода
         line[strcspn(line, "\n")] = 0;
         printf("%s\n", line);
     }
@@ -39,6 +40,7 @@ void view_file(const char *filename) {
 
     fclose(file);
 }
+
 void process_file(const char *input_filename, const char *output_filename) {
     FILE *input_file = fopen(input_filename, "r");
     if (input_file == NULL) {
@@ -62,8 +64,10 @@ void process_file(const char *input_filename, const char *output_filename) {
     Building b;
     char line[256];
     int found_count = 0;
+
     while (fgets(line, sizeof(line), input_file)) {
         line[strcspn(line, "\n")] = 0;
+
         char *token = strtok(line, "|");
         if (token == NULL) continue;
         strncpy(b.address, token, MAX_ADDRESS_LEN - 1);
@@ -85,7 +89,9 @@ void process_file(const char *input_filename, const char *output_filename) {
         token = strtok(NULL, "|");
         if (token == NULL) continue;
         b.service_life = atoi(token);
+
         b.years_to_repair = CAPITAL_REPAIR_PERIOD - b.service_life;
+
         if (b.service_life > 50) {
             fprintf(output_file, "%-25s %-15s %-6d %-9d %-7d %-7d\n",
                     b.address, b.type, b.floors, b.apartments,
@@ -105,4 +111,3 @@ void process_file(const char *input_filename, const char *output_filename) {
 
     printf("Обработка завершена. Результаты сохранены в '%s'.\n", output_filename);
 }
-

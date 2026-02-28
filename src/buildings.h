@@ -17,3 +17,4 @@ typedef struct {
 
 void create_initial_file(const char *filename);
 void view_file(const char *filename);
+#endif
